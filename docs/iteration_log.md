@@ -2,8 +2,6 @@
 
 Every failure encountered building this system, what caused it, and how it was fixed.
 
-This is the real engineering record — most GitHub projects only show the working version.
-
 ---
 
 ## Iteration 1 — Infinite Tool Loop
@@ -150,9 +148,9 @@ Diagnose by layer. Change one variable at a time. Fix → observe → fix next l
 ## Iteration 8 — [LOCKED] Marker Leaks Into User Response
 
 **Symptom:**
-Tool routing: ✅ (model called `private_search` correctly)
-Tool result: ✅ (`[PRIVATE] Results for: user profile` returned)
-User response: ❌ "I'm not able to provide your profile as private_search is locked."
+Tool routing:  (model called `private_search` correctly)
+Tool result:  (`[PRIVATE] Results for: user profile` returned)
+User response:  "I'm not able to provide your profile as private_search is locked."
 
 **Root cause:**
 Previous fix added `[LOCKED — not available in current session]` to tool descriptions
