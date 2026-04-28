@@ -71,46 +71,37 @@ Full terminal output: [`results/final_output.txt`](results/final_output.txt)
 
 ## Architecture
 
-```
-USER REQUEST
-     │
-     ▼
-┌──────────────────────────────────────────────┐
-│  MIDDLEWARE  (Infrastructure Layer)          │
-│  middleware.py → state_based_tools()         │
-│                                              │
-│  Reads: auth state + message count           │
-│  Wraps all tools with make_guarded_tool()    │
-│   • Allowed  → execute normally              │
-│   • Disallowed → return __ACCESS_DENIED__    │
-│  Passes all 3 to Groq (avoids schema bug)    │
-│  Post-call: logs any policy violations       │
-│                                              │
-│  KEY: tool names never change                │
-│       agent registry never breaks           │
-└─────────────────┬────────────────────────────┘
-                  │
-                  ▼
-┌──────────────────────────────────────────────┐
-│  MODEL  (Behavior Layer)                     │
-│  agent.py → create_agent()                   │
-│                                              │
-│  Reads clean tool descriptions               │
-│  Picks correct tool based on descriptions    │
-│  Hard stop: recursion_limit = 6              │
-│  Guided: system prompt rules 1-5             │
-│  temperature=0.1 (Groq schema stability)     │
-└─────────────────┬────────────────────────────┘
-                  │
-                  ▼
-┌──────────────────────────────────────────────┐
-│  UX LAYER  (Response Cleaner)                │
-│  response_cleaner.py → clean_response()      │
-│                                              │
-│  Strips: [PUBLIC] [PRIVATE] [ADVANCED]       │
-│  Strips: __ACCESS_DENIED__, tool name leaks  │
-│  Safety net: catches what prompts miss       │
-└──────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A([User Request]) --> B
+
+    subgraph B["Infrastructure Layer — middleware.py"]
+        B1[Reads auth state] --> B2[Wraps tools with guard]
+        B2 --> B3[Audit logs violations]
+        B3 --> B4{Allowed?}
+        B4 -->|Yes| B5[Executes normally]
+        B4 -->|No| B6[Returns ACCESS DENIED]
+    end
+
+    B --> C
+
+    subgraph C["Model Behavior Layer — agent.py"]
+        C1[Reads clean descriptions] --> C2[Selects one tool]
+        C2 --> C3[Hard stop: recursion limit=6]
+    end
+
+    C --> D
+
+    subgraph D["UX Protection Layer — response_cleaner.py"]
+        D1[Strips tool markers] --> D2[Strips leaked names]
+        D2 --> D3[Safety net catches rest]
+    end
+
+    D --> E([Clean User Response])
+
+    style B fill:#3b1f6e,stroke:#a78bfa,color:#e9d5ff
+    style C fill:#064e3b,stroke:#34d399,color:#d1fae5
+    style D fill:#7c2d12,stroke:#fb923c,color:#ffedd5
 ```
 
 ## Tool Access Policy
@@ -247,6 +238,8 @@ Groq API key: free tier at [console.groq.com](https://console.groq.com)
 | Iterative Debugging | 9 documented failures with root cause analysis |
 
 ---
+## What I Learned 
+I learned that AI agent systems fail in two completely separate ways — infrastructure failures (provider schema bugs, registry contract violations, recursion miscalibration) and behavior failures (RLHF safety overrides, tool description ambiguity, response leakage) — and that the skill is knowing which layer broke and applying the fix at that layer, never crossing them. I also learned that bugs mask each other in layered systems, that one fix reveals the next problem, and that the iteration itself is the engineering process, not a sign something went wrong.
 
 ## Requirements
 
