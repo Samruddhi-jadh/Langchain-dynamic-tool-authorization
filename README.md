@@ -6,10 +6,9 @@ using LangChain middleware, Groq (Llama 3.3-70b), and a 4-metric evaluation fram
 Built through 9 debugging iterations — each one exposing a real production problem
 and requiring a principled engineering fix.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/langchain-dynamic-tool-authorization/blob/main/notebook.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github.com/Samruddhi-jadh/Langchain-dynamic-tool-authorization/blob/main/Notebook.ipynb)
 
 ---
-
 ## Why This Matters
 
 Modern AI systems in production require four things most demos skip:
@@ -216,7 +215,7 @@ langchain-dynamic-tool-authorization/
 
 **Option 1 — Google Colab (no setup, recommended)**
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/langchain-dynamic-tool-authorization/blob/main/notebook.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github.com/Samruddhi-jadh/Langchain-dynamic-tool-authorization/blob/main/Notebook.ipynb)
 
 Click → add your Groq API key in the first cell → Run All → see 100/100/100/100.
 
