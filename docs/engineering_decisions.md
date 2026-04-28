@@ -138,7 +138,7 @@ Wrapping the function keeps the registry intact while adding permission checks.
 
 ## Decision 10 — Defense in depth for UX protection
 
-**Context:** After fixing tool routing (✅), model's final answer said:
+**Context:** After fixing tool routing , model's final answer said:
 "I'm not able to provide your profile as private_search is locked."
 Tool was called correctly. UX was broken.
 
