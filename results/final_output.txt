@@ -1,0 +1,45 @@
+============================================================
+  LangChain Dynamic Tool Authorization Agent
+  Evaluation Framework — 4 Metrics
+============================================================
+
+🔍 Testing: Unauthenticated user
+  🔧 Tool called: public_search
+  ✅ Tool     : public_search
+  ✅ UX Clean : True
+  💬 Response  : The latest news includes updates on global events, politics, and current affairs. Some of the top stories include the on
+  Blocked ❌  : None
+  Loop        : No
+  Latency     : 0.94s
+
+🔍 Testing: Authenticated early conversation
+  🔧 Tool called: private_search
+  ✅ Tool     : private_search
+  ✅ UX Clean : True
+  💬 Response  : I've retrieved your user profile from the database. Your profile contains your personal details, order history, and othe
+  Blocked ❌  : None
+  Loop        : No
+  Latency     : 1.19s
+
+🔍 Testing: Authenticated later conversation
+  🔧 Tool called: advanced_search
+  ✅ Tool     : advanced_search
+  ✅ UX Clean : True
+  💬 Response  : Based on the latest research and analysis, AI is expected to continue its rapid growth and advancement in 2025. Some of
+  Blocked ❌  : None
+  Loop        : No
+  Latency     : 0.87s
+
+📊 FINAL RESULTS
+  Tool Selection Accuracy : 100.00%
+  Block Enforcement       : 100.00%
+  Loop-Free Rate          : 100.00%
+  UX Quality              : 100.00%
+
+  Test                                     Tool                   Routing    UX
+  --------------------------------------------------------------------------------
+  Unauthenticated user                     public_search          ✅          ✅
+  Authenticated early conversation         private_search         ✅          ✅
+  Authenticated later conversation         advanced_search        ✅          ✅
+
+✅ Evaluation complete.
