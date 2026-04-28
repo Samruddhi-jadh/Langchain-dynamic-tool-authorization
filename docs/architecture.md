@@ -10,51 +10,39 @@ Never rely on a model to enforce what infrastructure should enforce.
 
 ## The Three Layers
 
+```mermaid
+flowchart TD
+    A([User Request]) --> B
+
+    subgraph B["Infrastructure Layer — middleware.py"]
+        B1[Reads auth state] --> B2[Wraps tools with guard]
+        B2 --> B3[Audit logs violations]
+        B3 --> B4{Allowed?}
+        B4 -->|Yes| B5[Executes normally]
+        B4 -->|No| B6[Returns ACCESS DENIED]
+    end
+
+    B --> C
+
+    subgraph C["Model Behavior Layer — agent.py"]
+        C1[Reads clean descriptions] --> C2[Selects one tool]
+        C2 --> C3[Hard stop: recursion limit=6]
+    end
+
+    C --> D
+
+    subgraph D["UX Protection Layer — response_cleaner.py"]
+        D1[Strips tool markers] --> D2[Strips leaked names]
+        D2 --> D3[Safety net catches rest]
+    end
+
+    D --> E([Clean User Response])
+
+    style B fill:#3b1f6e,stroke:#a78bfa,color:#e9d5ff
+    style C fill:#064e3b,stroke:#34d399,color:#d1fae5
+    style D fill:#7c2d12,stroke:#fb923c,color:#ffedd5
 ```
-USER REQUEST
-     │
-     ▼
-┌──────────────────────────────────────────────┐
-│  INFRASTRUCTURE LAYER                        │
-│  middleware.py → state_based_tools()         │
-│                                              │
-│  • Reads: auth state, message count          │
-│  • Wraps all tools with make_guarded_tool()  │
-│  • Allowed tools  → execute normally         │
-│  • Disallowed     → return __ACCESS_DENIED__ │
-│  • Passes all 3 to Groq (schema bug fix)     │
-│  • Post-call: logs policy violations         │
-│                                              │
-│  GUARANTEE: tool names never change          │
-│             agent registry never breaks      │
-└─────────────────┬────────────────────────────┘
-                  │
-                  ▼
-┌──────────────────────────────────────────────┐
-│  MODEL BEHAVIOR LAYER                        │
-│  agent.py → create_agent()                   │
-│                                              │
-│  • Reads clean tool descriptions             │
-│  • Selects tool based on description routing │
-│  • Hard stop: recursion_limit = 6            │
-│  • Guided by system prompt rules 1-5         │
-│  • temperature=0.1 (Groq schema stability)   │
-└─────────────────┬────────────────────────────┘
-                  │
-                  ▼
-┌──────────────────────────────────────────────┐
-│  UX PROTECTION LAYER                         │
-│  response_cleaner.py → clean_response()      │
-│                                              │
-│  • Strips: [PUBLIC] [PRIVATE] [ADVANCED]     │
-│  • Strips: __ACCESS_DENIED__                 │
-│  • Strips: leaked tool names in text         │
-│  • Safety net: catches what prompts miss     │
-└──────────────────────────────────────────────┘
-                  │
-                  ▼
-        CLEAN USER RESPONSE
-```
+
 
 ---
 
